@@ -17,16 +17,14 @@ run:
 	./builds/$(BINARY_UNIX)
 
 # Cross compilation
-
 build-linux:
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -ldflags="-s -w" -o builds/$(BINARY_UNIX) -v
 
 build-windows:
-	GOOS=windows GOARCH=amd64 $(GOBUILD) -o builds/$(BINARY_UNIX) -v
+	GOOS=windows GOARCH=amd64 $(GOBUILD) -o builds/$(BINARY_WIN) -v
 
 build-darwin:
-	GOOS=darwin GOARCH=amd64 $(GOBUILD) -o builds/$(BINARY_UNIX) -v
-
+	GOOS=darwin GOARCH=amd64 $(GOBUILD) -o builds/$(BINARY_MAC) -v
 
 clean: 
 	$(GOCLEAN)
