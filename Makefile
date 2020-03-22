@@ -18,7 +18,7 @@ run:
 
 # Cross compilation
 build-linux:
-    GOOS=linux GOARCH=amd64 $(GOBUILD) -ldflags="-s -w" -o builds/$(BINARY_UNIX) -v
+	GOOS=linux GOARCH=amd64 $(GOBUILD) -ldflags="-s -w" -o builds/$(BINARY_UNIX) -v
 
 build-windows:
 	GOOS=windows GOARCH=amd64 $(GOBUILD) -o builds/$(BINARY_WIN) -v
