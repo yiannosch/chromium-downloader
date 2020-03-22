@@ -31,7 +31,7 @@ func (wc WriteCounter) PrintProgress() {
 	fmt.Printf("\r%s", strings.Repeat(" ", 35))
 
 	// Return again and print current status of download
-	// We use the humanize package to print the bytes in a meaningful way (e.g. 10 MB)
+	// Using humanize package to print the bytes in a meaningful way (e.g. 10 MB)
 	fmt.Printf("\rDownloading... %s complete", humanize.Bytes(wc.Total))
 }
 
@@ -53,9 +53,7 @@ func getRevision(lastChange string) string {
 	return revision
 }
 
-// DownloadFile will download a url to a local file. It's efficient because it will
-// write as it downloads and not load the whole file into memory. We pass an io.TeeReader
-// into Copy() to report progress on the download.
+// DownloadFile will download a url to a local file
 func DownloadFile(filepath string, url string) error {
 
 	// Create the file, but give it a tmp file extension, this means we won't overwrite a
@@ -73,7 +71,7 @@ func DownloadFile(filepath string, url string) error {
 	}
 	defer resp.Body.Close()
 
-	// Create our progress reporter and pass it to be used alongside our writer
+	// Create progress reporter and pass it to be used alongside the writer
 	counter := &WriteCounter{}
 	if _, err = io.Copy(out, io.TeeReader(resp.Body, counter)); err != nil {
 		out.Close()
@@ -85,7 +83,7 @@ func DownloadFile(filepath string, url string) error {
 
 	// Close the file without defer so it can happen before Rename()
 	out.Close()
-
+	// Rename file
 	if err = os.Rename(filepath+".tmp", filepath); err != nil {
 		return err
 	}
@@ -95,16 +93,17 @@ func DownloadFile(filepath string, url string) error {
 func main() {
 
 	fileURL := ""
-	platform := runtime.GOOS
+	platform := runtime.GOOS //Get platform information
+
 	//Get latest revision snapshot for chromium.
 	lastChange := "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media"
 	revisionNo := getRevision(lastChange)
+
 	fmt.Print("Go runs on ")
 	switch pl := platform; pl {
 	case "darwin":
 		fmt.Println("Platform Mac OS.")
 		fileURL = "https://storage.googleapis.com/chromium-browser-snapshots/Mac/" + revisionNo + "/chrome-mac.zip"
-		//filepath = ""
 	case "linux":
 		fmt.Println("Platform Linux.")
 		fileURL = "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/" + revisionNo + "/chrome-linux.zip"
@@ -112,12 +111,13 @@ func main() {
 		fmt.Println("Platform Windows.")
 		fileURL = "https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/" + revisionNo + "/chrome-win.zip"
 	default:
-		// freebsd, openbsd
+		// freebsd, openbsd etc.
 		fmt.Printf("%s.\n", pl)
 		fmt.Println("Unsupported OS platform.")
 		os.Exit(3)
 	}
 
+	// Download chromium file
 	fmt.Println("Download Started")
 	if err := DownloadFile("chromium-"+platform+"-x64_latest_"+revisionNo+".zip", fileURL); err != nil {
 		panic(err)
