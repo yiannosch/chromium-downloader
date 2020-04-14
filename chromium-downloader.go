@@ -96,19 +96,25 @@ func main() {
 	platform := runtime.GOOS //Get platform information
 
 	//Get latest revision snapshot for chromium.
-	lastChange := "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media"
-	revisionNo := getRevision(lastChange)
+	revisionNo := ""
 
 	fmt.Print("Go runs on ")
 	switch pl := platform; pl {
 	case "darwin":
 		fmt.Println("Platform Mac OS.")
+		lastChange := "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Mac%2FLAST_CHANGE?alt=media"
+		revisionNo := getRevision(lastChange)
 		fileURL = "https://storage.googleapis.com/chromium-browser-snapshots/Mac/" + revisionNo + "/chrome-mac.zip"
+
 	case "linux":
 		fmt.Println("Platform Linux.")
+		lastChange := "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media"
+		revisionNo := getRevision(lastChange)
 		fileURL = "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/" + revisionNo + "/chrome-linux.zip"
 	case "windows":
 		fmt.Println("Platform Windows.")
+		lastChange := "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Win_x64%2FLAST_CHANGE?alt=media"
+		revisionNo := getRevision(lastChange)
 		fileURL = "https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/" + revisionNo + "/chrome-win.zip"
 	default:
 		// freebsd, openbsd etc.
