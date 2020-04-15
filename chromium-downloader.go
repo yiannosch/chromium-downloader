@@ -95,7 +95,6 @@ func main() {
 	fileURL := ""
 	platform := runtime.GOOS //Get platform information
 
-	//Get latest revision snapshot for chromium.
 	revisionNo := ""
 
 	fmt.Print("Go runs on ")
