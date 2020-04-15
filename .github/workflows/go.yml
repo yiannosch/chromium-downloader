@@ -44,5 +44,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: bin/*
-          draft: true
-          prerelease: true
+          draft: false
+          prerelease: false
