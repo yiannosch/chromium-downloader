@@ -12,6 +12,9 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
+var Version = "0.2.1"
+var Buildtime = ""
+
 // WriteCounter counts the number of bytes written to it. It implements to the io.Writer interface
 // and we can pass this into io.TeeReader() which will report progress on each write cycle.
 type WriteCounter struct {
@@ -91,6 +94,8 @@ func DownloadFile(filepath string, url string) error {
 }
 
 func main() {
+
+	fmt.Println("Version:\t", Version)
 
 	fileURL := ""
 	platform := runtime.GOOS //Get platform information

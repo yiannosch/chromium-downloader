@@ -15,8 +15,4 @@
 # vendor/
 
 # Builds directory for  binaries
-builds/
-scripts/
-
-# Builder script
-build.sh
+bin/

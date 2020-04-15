@@ -1,40 +1,41 @@
-# Basic go commands
-GOCMD=go
-GOBUILD=$(GOCMD) build
-GOCLEAN=$(GOCMD) clean
-GOTEST=$(GOCMD) test
-GOGET=$(GOCMD) get
-BINARY_NAME=chromium-downloader
-BINARY_WIN=$(BINARY_NAME)-windows-amd64
-BINARY_UNIX=$(BINARY_NAME)-linux-amd64
-BINARY_MAC=$(BINARY_NAME)-darwin-amd64
+NAME=chromium-downloader
+BINDIR=bin
+VERSION=$(shell git describe --tags || echo "unknown version")
+BUILDTIME=$(shell date -u)
+GOBUILD=CGO_ENABLED=0 go build -ldflags '-X "main.Version=$(VERSION)" \
+		-X "main.Buildtime=$(BUILDTIME)" \
+		-w -s'
 
-build:
-	$(GOBUILD) -ldflags="-s -w" -o builds/$(BINARY_UNIX) -v
+PLATFORM_LIST = \
+	darwin-amd64 \
+	linux-amd64
 
-run:
-	$(GOBUILD) -ldflags="-s -w" -o builds/$(BINARY_UNIX) -v ./...
-	./builds/$(BINARY_UNIX)
+WINDOWS_ARCH_LIST = \
+	windows-amd64
 
-# Cross compilation
-build-linux:
-	GOOS=linux GOARCH=amd64 $(GOBUILD) -ldflags="-s -w" -o builds/$(BINARY_UNIX) -v
+all: linux-amd64 darwin-amd64 windows-amd64
 
-build-windows:
-	GOOS=windows GOARCH=amd64 $(GOBUILD) -o builds/$(BINARY_WIN) -v
+darwin-amd64:
+	GOARCH=amd64 GOOS=darwin $(GOBUILD) -o $(BINDIR)/$(NAME)-$@
 
-build-darwin:
-	GOOS=darwin GOARCH=amd64 $(GOBUILD) -o builds/$(BINARY_MAC) -v
+linux-amd64:
+	GOARCH=amd64 GOOS=linux $(GOBUILD) -o $(BINDIR)/$(NAME)-$@
 
-clean: 
-	$(GOCLEAN)
-	rm -f builds/$(BINARY_WIN)
-	rm -f builds/$(BINARY_UNIX)
-	rm -f builds/$(BINARY_MAC)
+windows-amd64:
+	GOARCH=amd64 GOOS=windows $(GOBUILD) -o $(BINDIR)/$(NAME)-$@.exe
 
-OUT = builds
+gz_releases=$(addsuffix .tar, $(PLATFORM_LIST))
+zip_releases=$(addsuffix .zip, $(WINDOWS_ARCH_LIST))
 
-.PHONY: all
-all: build
+$(gz_releases): %.tar : %
+	chmod +x $(BINDIR)/$(NAME)-$(basename $@)
+	tar -zcf $(BINDIR)/$(NAME)-$(VERSION)-$(basename $@).tar.gz $(BINDIR)/$(NAME)-$(basename $@) --remove-files
 
-$(shell mkdir -p $(OUT))
+$(zip_releases): %.zip : %
+	zip -m -j $(BINDIR)/$(NAME)-$(VERSION)-$(basename $@).zip $(BINDIR)/$(NAME)-$(basename $@).exe
+
+all-arch: $(PLATFORM_LIST) $(WINDOWS_ARCH_LIST)
+
+releases: $(gz_releases) $(zip_releases)
+clean:
+	rm $(BINDIR)/*
