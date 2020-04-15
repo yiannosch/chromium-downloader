@@ -12,6 +12,7 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
+// Version details
 var Version = "0.2.1"
 var Buildtime = ""
 
