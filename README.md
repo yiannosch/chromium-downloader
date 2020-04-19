@@ -1,4 +1,4 @@
-![Go](https://github.com/yiannosch/chromium-downloader/workflows/Go/badge.svg)
+[![Go](https://github.com/yiannosch/chromium-downloader/workflows/Go/badge.svg)](https://github.com/yiannosch/chromium-downloader/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 # chromium-downloader
 A simple program that downloads the latest version of chromium browser
